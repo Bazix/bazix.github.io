@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Законы распределения ДСВ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: #4a5568;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .tasks-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .task-number {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .task-status {
+            font-size: 1.5em;
+        }
+
+        .task-content {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"] {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            width: 120px;
+            font-size: 1em;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #5a6fd8;
+        }
+
+        button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .check-button {
+            background: #48bb78;
+        }
+
+        .check-button:hover {
+            background: #38a169;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            font-size: 1em;
+        }
+
+        .result.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .result.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .distribution-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .distribution-table th,
+        .distribution-table td {
+            border: 2px solid #e2e8f0;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .distribution-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Тренажер: Законы распределения ДСВ</h1>
+        </div>
+
+        <div class="progress-container">
+            <div class="stats">
+                <span>Выполнено: <span id="completed-count">0</span>/10</span>
+                <span>Правильно: <span id="correct-count">0</span>/10</span>
+                <span>Процент: <span id="percentage">0</span>%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="tasks-container" id="tasks-container">
+            <!-- Задания будут добавляться через JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const tasks = [
+            {
+                id: 1,
+                type: "multiple-choice",
+                question: "Программа содержит 5 модулей. Вероятность ошибки в каждом модуле = 0.1. X - число модулей с ошибками. Какой закон распределения у X?",
+                options: [
+                    "Распределение Пуассона",
+                    "Биномиальное распределение",
+                    "Геометрическое распределение", 
+                    "Равномерное распределение"
+                ],
+                correctAnswer: 1
+            },
+            {
+                id: 2,
+                type: "calculation",
+                question: "Для биномиального распределения с n=10, p=0.3 найдите M[X]:",
+                correctAnswer: 3
+            },
+            {
+                id: 3,
+                type: "multiple-choice",
+                question: "На сервер в среднем поступает 4 запроса в минуту. X - число запросов за минуту. Какой закон распределения у X?",
+                options: [
+                    "Биномиальное распределение",
+                    "Распределение Пуассона", 
+                    "Геометрическое распределение",
+                    "Нормальное распределение"
+                ],
+                correctAnswer: 1
+            },
+            {
+                id: 4,
+                type: "calculation",
+                question: "Для распределения Пуассона с λ=4 найдите P(X=2):",
+                correctAnswer: 0.1465
+            },
+            {
+                id: 5,
+                type: "multiple-choice",
+                question: "Вероятность успешной компиляции = 0.8. X - число попыток до первой успешной компиляции. Какой закон распределения у X?",
+                options: [
+                    "Биномиальное распределение",
+                    "Распределение Пуассона",
+                    "Геометрическое распределение",
+                    "Показательное распределение"
+                ],
+                correctAnswer: 2
+            },
+            {
+                id: 6,
+                type: "calculation",
+                question: "Для геометрического распределения с p=0.2 найдите M[X]:",
+                correctAnswer: 5
+            },
+            {
+                id: 7,
+                type: "multiple-choice",
+                question: "Случайная величина X принимает значения 1, 2, 3, 4, 5 с одинаковой вероятностью. Какой это закон распределения?",
+                options: [
+                    "Биномиальное распределение",
+                    "Распределение Пуассона",
+                    "Геометрическое распределение",
+                    "Дискретное равномерное распределение"
+                ],
+                correctAnswer: 3
+            },
+            {
+                id: 8,
+                type: "calculation",
+                question: "Для равномерного распределения на {1,2,3,4,5,6} найдите P(X ≥ 4):",
+                correctAnswer: 0.5
+            },
+            {
+                id: 9,
+                type: "multiple-choice",
+                question: "Дан ряд распределения: P(X=0)=0.25, P(X=1)=0.5, P(X=2)=0.25. Какой это закон?",
+                options: [
+                    "Биномиальное (n=2, p=0.5)",
+                    "Распределение Пуассона",
+                    "Геометрическое распределение", 
+                    "Равномерное распределение"
+                ],
+                correctAnswer: 0
+            },
+            {
+                id: 10,
+                type: "calculation",
+                question: "Для биномиального распределения с n=8, p=0.25 найдите D[X]:",
+                correctAnswer: 1.5
+            }
+        ];
+
+        let completedTasks = 0;
+        let correctAnswers = 0;
+        let userAnswers = new Array(tasks.length).fill(null);
+
+        function initializeTrainer() {
+            const container = document.getElementById('tasks-container');
+            
+            tasks.forEach((task, index) => {
+                const taskCard = createTaskCard(task, index);
+                container.appendChild(taskCard);
+            });
+            
+            updateProgress();
+        }
+
+        function createTaskCard(task, index) {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.id = `task-${task.id}`;
+            
+            let content = `
+                <div class="task-header">
+                    <div class="task-number">Задание ${task.id}</div>
+                    <div class="task-status" id="status-${task.id}">⏳</div>
+                </div>
+                <div class="task-content">
+                    <p>${task.question}</p>
+            `;
+
+            if (task.type === 'multiple-choice') {
+                content += createMultipleChoiceOptions(task, index);
+            } else if (task.type === 'calculation') {
+                content += createCalculationInput(task, index);
+            }
+
+            content += `
+                <button class="check-button" onclick="checkTask(${index})" id="button-${task.id}">Проверить</button>
+                <div class="result" id="result-${task.id}"></div>
+            `;
+
+            card.innerHTML = content;
+            return card;
+        }
+
+        function createMultipleChoiceOptions(task, index) {
+            let options = '<div class="options">';
+            
+            task.options.forEach((option, optIndex) => {
+                options += `
+                    <div class="option" onclick="selectOption(${index}, ${optIndex})" id="option-${index}-${optIndex}">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            options += '</div>';
+            return options;
+        }
+
+        function createCalculationInput(task, index) {
+            return `
+                <div class="input-group">
+                    <label>Ответ: </label>
+                    <input type="number" id="input-${index}" step="0.0001" placeholder="0.0000">
+                </div>
+            `;
+        }
+
+        function selectOption(taskIndex, optionIndex) {
+            const task = tasks[taskIndex];
+            
+            for (let i = 0; i < task.options.length; i++) {
+                const optionElement = document.getElementById(`option-${taskIndex}-${i}`);
+                optionElement.classList.remove('selected');
+            }
+            
+            const selectedElement = document.getElementById(`option-${taskIndex}-${optionIndex}`);
+            selectedElement.classList.add('selected');
+            
+            userAnswers[taskIndex] = optionIndex;
+        }
+
+        function checkTask(taskIndex) {
+            const task = tasks[taskIndex];
+            const resultElement = document.getElementById(`result-${task.id}`);
+            const statusElement = document.getElementById(`status-${task.id}`);
+            const buttonElement = document.getElementById(`button-${task.id}`);
+            
+            let isCorrect = false;
+            
+            if (task.type === 'multiple-choice') {
+                isCorrect = userAnswers[taskIndex] === task.correctAnswer;
+                
+                task.options.forEach((_, optIndex) => {
+                    const optionElement = document.getElementById(`option-${taskIndex}-${optIndex}`);
+                    if (optIndex === task.correctAnswer) {
+                        optionElement.classList.add('correct');
+                    } else if (optIndex === userAnswers[taskIndex] && !isCorrect) {
+                        optionElement.classList.add('incorrect');
+                    }
+                });
+                
+            } else if (task.type === 'calculation') {
+                const userInput = document.getElementById(`input-${taskIndex}`);
+                const userValue = parseFloat(userInput.value);
+                isCorrect = Math.abs(userValue - task.correctAnswer) < 0.001;
+            }
+            
+            if (isCorrect) {
+                resultElement.className = 'result correct';
+                resultElement.innerHTML = '✅ Правильно!';
+                statusElement.innerHTML = '✅';
+                buttonElement.disabled = true;
+                
+                if (userAnswers[taskIndex] === null) {
+                    completedTasks++;
+                    correctAnswers++;
+                }
+            } else {
+                resultElement.className = 'result incorrect';
+                resultElement.innerHTML = '❌ Неверно';
+                statusElement.innerHTML = '❌';
+                
+                if (userAnswers[taskIndex] === null) {
+                    completedTasks++;
+                }
+            }
+            
+            userAnswers[taskIndex] = true;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (completedTasks / tasks.length) * 100;
+            const percentage = ((correctAnswers / completedTasks) * 100) || 0;
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('completed-count').textContent = completedTasks;
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('percentage').textContent = percentage.toFixed(1);
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeTrainer);
+    </script>
+</body>
+</html>
