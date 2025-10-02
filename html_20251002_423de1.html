@@ -251,10 +251,54 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+                    .nav-link { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.9); 
+            color: #667eea; 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
+        .nav-link:hover { 
+            background: white; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
+        }
+        
+        .to-top { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 30px; 
+            background: #667eea; 
+            color: white; 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%; 
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            font-size: 1.5em; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            transition: all 0.3s ease; 
+            z-index: 1000; 
+        }
+        .to-top:hover { 
+            background: #5a6fd8; 
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3); 
+        }
+        .to-top.show { display: flex; }
         }
     </style>
 </head>
 <body>
+        <a href="https://discret-random-variables-a7nzyao.gamma.site/" class="nav-link">📈 Назад"</a>
     <div class="container">
         <div class="header">
             <h1>Тренажер: Законы распределения ДСВ</h1>
@@ -275,7 +319,7 @@
             <!-- Задания будут добавляться через JavaScript -->
         </div>
     </div>
-
+<div class="to-top" id="toTop" onclick="scrollToTop()">↑</div>
     <script>
         const tasks = [
             {
@@ -501,6 +545,20 @@
             userAnswers[taskIndex] = true;
             updateProgress();
         }
+
+         function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Показ/скрытие кнопки "Наверх"
+        window.addEventListener('scroll', function() {
+            const toTop = document.getElementById('toTop');
+            if (window.pageYOffset > 300) {
+                toTop.classList.add('show');
+            } else {
+                toTop.classList.remove('show');
+            }
+        });
 
         function updateProgress() {
             const progress = (completedTasks / tasks.length) * 100;
