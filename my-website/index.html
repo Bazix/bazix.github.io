@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: 10 заданий по ДСВ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: #4a5568;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .tasks-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .task-number {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .task-title {
+            color: #4a5568;
+            font-size: 1.3em;
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        .task-status {
+            font-size: 1.5em;
+        }
+
+        .task-content {
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            width: 120px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .check-button {
+            background: #48bb78;
+        }
+
+        .check-button:hover {
+            background: #38a169;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            font-size: 1em;
+        }
+
+        .result.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .result.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .distribution-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+
+        .distribution-table th,
+        .distribution-table td {
+            border: 2px solid #e2e8f0;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .distribution-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .distribution-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .hint {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .formula {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .task-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            input[type="number"], input[type="text"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Тренажер: 10 заданий по ДСВ</h1>
+            <p>Для специальности "Техник-программист"</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="stats">
+                <span>Выполнено: <span id="completed-count">0</span>/10</span>
+                <span>Правильно: <span id="correct-count">0</span>/10</span>
+                <span>Процент: <span id="percentage">0</span>%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="tasks-container" id="tasks-container">
+            <!-- Задания будут добавляться через JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Данные заданий
+        const tasks = [
+            {
+                id: 1,
+                title: "Определение ДСВ",
+                type: "multiple-choice",
+                question: "Какая из следующих величин является дискретной случайной величиной?",
+                options: [
+                    "Время отклика сервера в миллисекундах",
+                    "Количество багов в программе",
+                    "Температура процессора в градусах Цельсия",
+                    "Загрузка оперативной памяти в процентах"
+                ],
+                correctAnswer: 1,
+                explanation: "✅ Количество багов - дискретная величина, так как принимает целые изолированные значения (0, 1, 2, ...). Остальные величины - непрерывные."
+            },
+            {
+                id: 2,
+                title: "Свойства ряда распределения",
+                type: "multiple-choice",
+                question: "Что обязательно должно выполняться для ряда распределения ДСВ?",
+                options: [
+                    "Сумма всех вероятностей равна 0",
+                    "Сумма всех вероятностей равна 1",
+                    "Все вероятности равны между собой",
+                    "Все значения случайной величины положительны"
+                ],
+                correctAnswer: 1,
+                explanation: "✅ Основное свойство: сумма вероятностей всех возможных значений должна равняться 1."
+            },
+            {
+                id: 3,
+                title: "Математическое ожидание",
+                type: "calculation",
+                question: "Дана ДСВ с рядом распределения. Вычислите математическое ожидание M[X]:",
+                distribution: {
+                    values: [1, 2, 3, 4],
+                    probabilities: [0.1, 0.4, 0.3, 0.2]
+                },
+                correctAnswer: 2.5,
+                formula: "M[X] = Σ(xᵢ × pᵢ) = 1×0.1 + 2×0.4 + 3×0.3 + 4×0.2",
+                explanation: "✅ M[X] = (1×0.1) + (2×0.4) + (3×0.3) + (4×0.2) = 0.1 + 0.8 + 0.9 + 0.8 = 2.5"
+            },
+            {
+                id: 4,
+                title: "Вероятность события",
+                type: "calculation",
+                question: "Для ДСВ из предыдущей задачи найдите P(X ≥ 3):",
+                correctAnswer: 0.5,
+                formula: "P(X ≥ 3) = P(X=3) + P(X=4) = 0.3 + 0.2",
+                explanation: "✅ P(X ≥ 3) = P(X=3) + P(X=4) = 0.3 + 0.2 = 0.5"
+            },
+            {
+                id: 5,
+                title: "Дисперсия",
+                type: "calculation",
+                question: "Вычислите дисперсию D[X] для ДСВ из задания 3:",
+                correctAnswer: 0.85,
+                formula: "D[X] = M[X²] - (M[X])² = (1×0.1 + 4×0.4 + 9×0.3 + 16×0.2) - (2.5)²",
+                explanation: "✅ M[X²] = (1×0.1) + (4×0.4) + (9×0.3) + (16×0.2) = 0.1 + 1.6 + 2.7 + 3.2 = 7.6<br>D[X] = 7.6 - (2.5)² = 7.6 - 6.25 = 0.85"
+            },
+            {
+                id: 6,
+                title: "Функция распределения",
+                type: "multiple-choice",
+                question: "Чему равна F(2.5) для ДСВ из задания 3?",
+                options: [
+                    "0.1",
+                    "0.5", 
+                    "0.9",
+                    "1.0"
+                ],
+                correctAnswer: 1,
+                explanation: "✅ F(2.5) = P(X < 2.5) = P(X=1) + P(X=2) = 0.1 + 0.4 = 0.5"
+            },
+            {
+                id: 7,
+                title: "IT-задача: Надежность системы",
+                type: "calculation",
+                question: "Система из 2 серверов. Вероятность отказа одного сервера = 0.1. X - число отказавших серверов. Найдите M[X]:",
+                correctAnswer: 0.2,
+                formula: "Ряд распределения: P(X=0)=0.81, P(X=1)=0.18, P(X=2)=0.01<br>M[X] = 0×0.81 + 1×0.18 + 2×0.01",
+                explanation: "✅ M[X] = (0×0.81) + (1×0.18) + (2×0.01) = 0 + 0.18 + 0.02 = 0.2"
+            },
+            {
+                id: 8,
+                title: "Свойства математического ожидания",
+                type: "multiple-choice",
+                question: "Если Y = 2X + 3, и M[X] = 4, то чему равно M[Y]?",
+                options: [
+                    "8",
+                    "11",
+                    "14",
+                    "16"
+                ],
+                correctAnswer: 1,
+                explanation: "✅ M[Y] = M[2X + 3] = 2×M[X] + 3 = 2×4 + 3 = 11"
+            },
+            {
+                id: 9,
+                title: "Вероятность для программиста",
+                type: "calculation",
+                question: "Вероятность успешной компиляции = 0.9. Проводится 3 независимые компиляции. X - число успешных. Найдите P(X=2):",
+                correctAnswer: 0.243,
+                formula: "P(X=2) = C³₂ × (0.9)² × (0.1)¹ = 3 × 0.81 × 0.1",
+                explanation: "✅ P(X=2) = C³₂ × (0.9)² × (0.1)¹ = 3 × 0.81 × 0.1 = 0.243"
+            },
+            {
+                id: 10,
+                title: "Среднее квадратическое отклонение",
+                type: "calculation",
+                question: "Для ДСВ из задания 3 найдите σ[X] (среднее квадратическое отклонение):",
+                correctAnswer: 0.922,
+                formula: "σ[X] = √D[X] = √0.85",
+                explanation: "✅ σ[X] = √D[X] = √0.85 ≈ 0.922"
+            }
+        ];
+
+        // Глобальные переменные
+        let completedTasks = 0;
+        let correctAnswers = 0;
+        let userAnswers = new Array(tasks.length).fill(null);
+
+        // Инициализация тренажера
+        function initializeTrainer() {
+            const container = document.getElementById('tasks-container');
+            
+            tasks.forEach((task, index) => {
+                const taskCard = createTaskCard(task, index);
+                container.appendChild(taskCard);
+            });
+            
+            updateProgress();
+        }
+
+        // Создание карточки задания
+        function createTaskCard(task, index) {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.id = `task-${task.id}`;
+            
+            let content = `
+                <div class="task-header">
+                    <div class="task-number">Задание ${task.id}</div>
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-status" id="status-${task.id}">⏳</div>
+                </div>
+                <div class="task-content">
+                    <p><strong>${task.question}</strong></p>
+            `;
+
+            // Добавление таблицы распределения если есть
+            if (task.distribution) {
+                content += createDistributionTable(task.distribution);
+            }
+
+            // Добавление формулы если есть
+            if (task.formula) {
+                content += `<div class="formula">${task.formula}</div>`;
+            }
+
+            // Добавление вариантов ответа или полей ввода
+            if (task.type === 'multiple-choice') {
+                content += createMultipleChoiceOptions(task, index);
+            } else if (task.type === 'calculation') {
+                content += createCalculationInput(task, index);
+            }
+
+            content += `
+                <button class="check-button" onclick="checkTask(${index})" id="button-${task.id}">Проверить</button>
+                <div class="result" id="result-${task.id}"></div>
+            `;
+
+            card.innerHTML = content;
+            return card;
+        }
+
+        // Создание таблицы распределения
+        function createDistributionTable(distribution) {
+            let table = '<table class="distribution-table"><tr><th>X</th>';
+            
+            distribution.values.forEach(value => {
+                table += `<td>${value}</td>`;
+            });
+            
+            table += '</tr><tr><th>P</th>';
+            
+            distribution.probabilities.forEach(prob => {
+                table += `<td>${prob}</td>`;
+            });
+            
+            table += '</tr></table>';
+            return table;
+        }
+
+        // Создание вариантов ответа для multiple-choice
+        function createMultipleChoiceOptions(task, index) {
+            let options = '<div class="options">';
+            
+            task.options.forEach((option, optIndex) => {
+                options += `
+                    <div class="option" onclick="selectOption(${index}, ${optIndex})" id="option-${index}-${optIndex}">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            options += '</div>';
+            return options;
+        }
+
+        // Создание поля ввода для calculation
+        function createCalculationInput(task, index) {
+            return `
+                <div class="input-group">
+                    <label>Ответ: </label>
+                    <input type="number" id="input-${index}" step="0.001" placeholder="0.000">
+                    <span class="hint">Введите число с тремя знаками после запятой</span>
+                </div>
+            `;
+        }
+
+        // Выбор варианта ответа
+        function selectOption(taskIndex, optionIndex) {
+            const task = tasks[taskIndex];
+            
+            // Сброс предыдущего выбора
+            for (let i = 0; i < task.options.length; i++) {
+                const optionElement = document.getElementById(`option-${taskIndex}-${i}`);
+                optionElement.classList.remove('selected');
+            }
+            
+            // Установка нового выбора
+            const selectedElement = document.getElementById(`option-${taskIndex}-${optionIndex}`);
+            selectedElement.classList.add('selected');
+            
+            userAnswers[taskIndex] = optionIndex;
+        }
+
+        // Проверка задания
+        function checkTask(taskIndex) {
+            const task = tasks[taskIndex];
+            const resultElement = document.getElementById(`result-${task.id}`);
+            const statusElement = document.getElementById(`status-${task.id}`);
+            const buttonElement = document.getElementById(`button-${task.id}`);
+            
+            let isCorrect = false;
+            
+            if (task.type === 'multiple-choice') {
+                isCorrect = userAnswers[taskIndex] === task.correctAnswer;
+                
+                // Подсветка правильного ответа
+                task.options.forEach((_, optIndex) => {
+                    const optionElement = document.getElementById(`option-${taskIndex}-${optIndex}`);
+                    if (optIndex === task.correctAnswer) {
+                        optionElement.classList.add('correct');
+                    } else if (optIndex === userAnswers[taskIndex] && !isCorrect) {
+                        optionElement.classList.add('incorrect');
+                    }
+                });
+                
+            } else if (task.type === 'calculation') {
+                const userInput = document.getElementById(`input-${taskIndex}`);
+                const userValue = parseFloat(userInput.value);
+                isCorrect = Math.abs(userValue - task.correctAnswer) < 0.001;
+            }
+            
+            // Обновление интерфейса
+            if (isCorrect) {
+                resultElement.className = 'result correct';
+                resultElement.innerHTML = `✅ Правильно!<br>${task.explanation}`;
+                statusElement.innerHTML = '✅';
+                statusElement.style.color = '#48bb78';
+                buttonElement.disabled = true;
+                buttonElement.style.background = '#a0aec0';
+                
+                if (userAnswers[taskIndex] === null) {
+                    completedTasks++;
+                    correctAnswers++;
+                }
+            } else {
+                resultElement.className = 'result incorrect';
+                resultElement.innerHTML = `❌ Неверно. ${task.explanation}`;
+                statusElement.innerHTML = '❌';
+                statusElement.style.color = '#f56565';
+                
+                if (userAnswers[taskIndex] === null) {
+                    completedTasks++;
+                }
+            }
+            
+            userAnswers[taskIndex] = true; // Помечаем как проверенное
+            updateProgress();
+        }
+
+        // Обновление прогресса
+        function updateProgress() {
+            const progress = (completedTasks / tasks.length) * 100;
+            const percentage = ((correctAnswers / completedTasks) * 100) || 0;
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('completed-count').textContent = completedTasks;
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('percentage').textContent = percentage.toFixed(1);
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', initializeTrainer);
+    </script>
+</body>
+</html>
