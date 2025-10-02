@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Функция распределения для кубика</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .graph-container {
+            position: relative;
+            margin: 40px 0;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            background: white;
+            display: block;
+            margin: 0 auto;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .coordinates {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Функция распределения для игрального кубика</h1>
+        
+        <div class="info">
+            <strong>F(x) = P(ξ < x)</strong> - вероятность того, что выпавшее число будет меньше x<br>
+            Кубик имеет равномерное распределение: P(ξ=k) = 1/6 для k=1,2,3,4,5,6
+        </div>
+
+        <div class="controls">
+            <button onclick="drawGraph()">Перерисовать график</button>
+            <button onclick="showProbabilities()">Показать вероятности</button>
+        </div>
+
+        <div class="graph-container">
+            <canvas id="distributionChart" width="700" height="400"></canvas>
+            <div class="coordinates" id="coordinates"></div>
+        </div>
+    </div>
+
+    <script>
+        function drawGraph() {
+            const canvas = document.getElementById('distributionChart');
+            const ctx = canvas.getContext('2d');
+            const coordinatesDiv = document.getElementById('coordinates');
+            
+            // Очищаем canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Параметры графика
+            const padding = 60;
+            const graphWidth = canvas.width - 2 * padding;
+            const graphHeight = canvas.height - 2 * padding;
+            
+            // Масштабирование
+            const xScale = graphWidth / 8; // от 0 до 8 по x
+            const yScale = graphHeight;    // от 0 до 1 по y
+            
+            // Рисуем оси
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            // Ось Y
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            // Ось X
+            ctx.moveTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+            
+            // Подписи осей
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Arial';
+            ctx.fillText('F(x)', padding - 30, padding + 10);
+            ctx.fillText('x', canvas.width - padding + 10, canvas.height - padding + 20);
+            
+            // Разметка оси X
+            for (let x = 0; x <= 8; x++) {
+                const xPos = padding + x * xScale;
+                ctx.beginPath();
+                ctx.moveTo(xPos, canvas.height - padding - 5);
+                ctx.lineTo(xPos, canvas.height - padding + 5);
+                ctx.stroke();
+                ctx.fillText(x.toString(), xPos - 5, canvas.height - padding + 20);
+            }
+            
+            // Разметка оси Y
+            for (let y = 0; y <= 6; y++) {
+                const yValue = y / 6;
+                const yPos = canvas.height - padding - yValue * yScale;
+                ctx.beginPath();
+                ctx.moveTo(padding - 5, yPos);
+                ctx.lineTo(padding + 5, yPos);
+                ctx.stroke();
+                ctx.fillText(yValue.toFixed(2), padding - 40, yPos + 5);
+            }
+            
+            // Функция распределения для кубика
+            function F(x) {
+                if (x <= 1) return 0;
+                if (x <= 2) return 1/6;
+                if (x <= 3) return 2/6;
+                if (x <= 4) return 3/6;
+                if (x <= 5) return 4/6;
+                if (x <= 6) return 5/6;
+                return 1;
+            }
+            
+            // Рисуем ступенчатую функцию
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            const step = 0.01;
+            let firstPoint = true;
+            
+            for (let x = 0; x <= 8; x += step) {
+                const xPos = padding + x * xScale;
+                const yPos = canvas.height - padding - F(x) * yScale;
+                
+                if (firstPoint) {
+                    ctx.moveTo(xPos, yPos);
+                    firstPoint = false;
+                } else {
+                    ctx.lineTo(xPos, yPos);
+                }
+            }
+            ctx.stroke();
+            
+            // Рисуем точки разрыва (кружки)
+            const criticalPoints = [1, 2, 3, 4, 5, 6];
+            ctx.fillStyle = '#e74c3c';
+            
+            criticalPoints.forEach(x => {
+                // Значение слева от точки
+                const yLeft = F(x - 0.001);
+                const xPosLeft = padding + x * xScale;
+                const yPosLeft = canvas.height - padding - yLeft * yScale;
+                
+                // Кружок для значения слева (заполненный)
+                ctx.beginPath();
+                ctx.arc(xPosLeft, yPosLeft, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Стрелка для скачка
+                const yRight = F(x + 0.001);
+                const yPosRight = canvas.height - padding - yRight * yScale;
+                
+                ctx.strokeStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.moveTo(xPosLeft, yPosLeft);
+                ctx.lineTo(xPosLeft, yPosRight);
+                ctx.stroke();
+                
+                // Пустой кружок в начале скачка
+                ctx.strokeStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(xPosLeft, yPosRight, 5, 0, 2 * Math.PI);
+                ctx.stroke();
+            });
+            
+            // Подписи критических точек
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 12px Arial';
+            criticalPoints.forEach(x => {
+                const xPos = padding + x * xScale;
+                ctx.fillText(`x=${x}`, xPos - 10, canvas.height - padding + 35);
+            });
+
+            coordinatesDiv.innerHTML = 'График показывает ступенчатую функцию распределения. Высота каждой ступеньки: 1/6 ≈ 0.1667';
+        }
+        
+        function showProbabilities() {
+            alert('Вероятности для игрального кубика:\n\n' +
+                  'P(ξ=1) = 1/6 ≈ 0.1667\n' +
+                  'P(ξ=2) = 1/6 ≈ 0.1667\n' +
+                  'P(ξ=3) = 1/6 ≈ 0.1667\n' +
+                  'P(ξ=4) = 1/6 ≈ 0.1667\n' +
+                  'P(ξ=5) = 1/6 ≈ 0.1667\n' +
+                  'P(ξ=6) = 1/6 ≈ 0.1667\n\n' +
+                  'Сумма всех вероятностей: 1');
+        }
+        
+        // Рисуем график при загрузке страницы
+        window.onload = drawGraph;
+        
+        // Добавляем обработчик для показа координат при наведении
+        document.getElementById('distributionChart').addEventListener('mousemove', function(event) {
+            const canvas = this;
+            const rect = canvas.getBoundingClientRect();
+            const padding = 60;
+            const graphWidth = canvas.width - 2 * padding;
+            const graphHeight = canvas.height - 2 * padding;
+            
+            const x = (event.clientX - rect.left - padding) / (graphWidth / 8);
+            const y = 1 - (event.clientY - rect.top - padding) / graphHeight;
+            
+            if (x >= 0 && x <= 8 && y >= 0 && y <= 1) {
+                document.getElementById('coordinates').innerHTML = 
+                    `x: ${x.toFixed(2)}, F(x): ${F(x).toFixed(4)}`;
+            }
+        });
+        
+        function F(x) {
+            if (x <= 1) return 0;
+            if (x <= 2) return 1/6;
+            if (x <= 3) return 2/6;
+            if (x <= 4) return 3/6;
+            if (x <= 5) return 4/6;
+            if (x <= 6) return 5/6;
+            return 1;
+        }
+    </script>
+</body>
+</html>
