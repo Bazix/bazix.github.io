@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -365,7 +365,7 @@
         </div>
 
         <div class="tasks-container" id="tasks-container">
-            <!-- Задания будут добавляться через JavaScript -->
+        
         </div>
     </div>
 <div class="to-top" id="toTop" onclick="scrollToTop()">↑</div>
@@ -693,5 +693,257 @@
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', initializeTrainer);
     </script>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Демонстрация семантической разметки HTML5</title>
+    <style>
+        /* Базовые стили для наглядности */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        /* Стили для демонстрации семантических блоков */
+        header, nav, main, article, section, aside, footer, details, figure, mark, time {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Разные цвета для наглядности */
+        header { background-color: #e3f2fd; border-left: 5px solid #2196f3; }
+        nav { background-color: #e8eaf6; border-left: 5px solid #3f51b5; }
+        main { background-color: #f1f8e9; border-left: 5px solid #689f38; }
+        article { background-color: #fff3e0; border-left: 5px solid #ff9800; }
+        section { background-color: #fce4ec; border-left: 5px solid #e91e63; }
+        aside { background-color: #e0f2f1; border-left: 5px solid #009688; }
+        footer { background-color: #eeeeee; border-left: 5px solid #9e9e9e; }
+        details { background-color: #d1c4e9; border-left: 5px solid #673ab7; }
+        figure { background-color: #ffe0b2; border-left: 5px solid #ff6f00; }
+
+        /* Стили для подписей */
+        .tag-name {
+            display: inline-block;
+            background-color: rgba(0,0,0,0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Стили для демонстрации вложенности */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Стили для mark тега */
+        mark {
+            background-color: #ffeb3b;
+            padding: 2px 5px;
+            border-radius: 4px;
+            border-left: none;
+            margin-bottom: 0;
+        }
+
+        /* Стили для time тега */
+        time {
+            background-color: #b2dfdb;
+            padding: 2px 8px;
+            border-radius: 16px;
+            border-left: none;
+            display: inline-block;
+            margin-bottom: 0;
+        }
+
+        /* Стили для figure и figcaption */
+        figure {
+            margin: 15px 0;
+            padding: 15px;
+        }
+
+        figcaption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+
+        /* Сетка для aside и main */
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content-wrapper main {
+            flex: 2;
+        }
+
+        .content-wrapper aside {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- ШАПКА САЙТА: header -->
+        <header>
+            <div class="tag-name">&lt;header&gt;</div>
+            <h1>Демонстрация семантической разметки HTML5</h1>
+            <p>Этот документ показывает основные семантические теги и их вложенность</p>
+        </header>
+
+        <!-- НАВИГАЦИЯ: nav -->
+        <nav>
+            <div class="tag-name">&lt;nav&gt;</div>
+            <p><strong>Навигация по странице:</strong></p>
+            <ul>
+                <li><a href="#main-content">Основное содержание</a></li>
+                <li><a href="#article-example">Статья</a></li>
+                <li><a href="#aside-example">Боковая панель</a></li>
+                <li><a href="#additional">Дополнительные теги</a></li>
+            </ul>
+        </nav>
+
+        <!-- ОСНОВНОЙ КОНТЕНТ И БОКОВАЯ ПАНЕЛЬ В ОДНОМ РЯДУ -->
+        <div class="content-wrapper">
+            <!-- ОСНОВНОЙ КОНТЕНТ: main -->
+            <main id="main-content">
+                <div class="tag-name">&lt;main&gt;</div>
+                <h2>Основное содержание страницы</h2>
+                <p>Тег <code>&lt;main&gt;</code> содержит уникальный контент данной страницы. Он не должен повторяться на других страницах (в отличие от header, nav, footer).</p>
+
+                <!-- СТАТЬЯ: article -->
+                <article id="article-example">
+                    <div class="tag-name">&lt;article&gt;</div>
+                    <h2>Что такое семантическая верстка?</h2>
+                    <p>Семантическая верстка — это подход к созданию веб-страниц, при котором HTML-теги выбираются исходя из смысла (семантики) содержимого, а не его внешнего вида.</p>
+                    
+                    <!-- СЕКЦИЯ: section внутри article -->
+                    <section>
+                        <div class="tag-name">&lt;section&gt;</div>
+                        <h3>Преимущества семантической верстки:</h3>
+                        <ul>
+                            <li><strong>Доступность:</strong> Скринридеры лучше понимают структуру страницы</li>
+                            <li><strong>SEO:</strong> Поисковые системы лучше индексируют контент</li>
+                            <li><strong>Поддерживаемость:</strong> Код легче читать и поддерживать</li>
+                        </ul>
+                    </section>
+
+                    <!-- ЕЩЕ ОДНА СЕКЦИЯ: section -->
+                    <section>
+                        <div class="tag-name">&lt;section&gt;</div>
+                        <h3>Основные семантические теги:</h3>
+                        <ul>
+                            <li><code>&lt;header&gt;</code> — шапка раздела или страницы</li>
+                            <li><code>&lt;nav&gt;</code> — навигационное меню</li>
+                            <li><code>&lt;main&gt;</code> — основной контент</li>
+                            <li><code>&lt;article&gt;</code> — независимая статья</li>
+                            <li><code>&lt;section&gt;</code> — логический раздел</li>
+                            <li><code>&lt;aside&gt;</code> — дополнительное содержание</li>
+                            <li><code>&lt;footer&gt;</code> — подвал раздела или страницы</li>
+                        </ul>
+                    </section>
+                </article>
+            </main>
+
+            <!-- БОКОВАЯ ПАНЕЛЬ: aside -->
+            <aside id="aside-example">
+                <div class="tag-name">&lt;aside&gt;</div>
+                <h3>Боковая панель</h3>
+                <p>Тег <code>&lt;aside&gt;</code> содержит дополнительную информацию, которая связана с основным контентом, но не является его частью.</p>
+                
+                <!-- ДЕМОНСТРАЦИЯ figure И figcaption -->
+                <figure>
+                    <div class="tag-name">&lt;figure&gt; + &lt;figcaption&gt;</div>
+                    <div style="background: #ffb74d; padding: 20px; text-align: center; border-radius: 8px;">
+                        📷 Место для изображения
+                    </div>
+                    <figcaption>
+                        <code>&lt;figcaption&gt;</code> - подпись к изображению или диаграмме
+                    </figcaption>
+                </figure>
+                
+                <p><strong>Интересный факт:</strong> 
+                <mark>&lt;mark&gt; выделяет текст</mark>, как маркером, 
+                а <time datetime="2025-02-11">&lt;time&gt; 11 февраля 2025</time> обозначает дату или время.</p>
+            </aside>
+        </div>
+
+        <!-- ДОПОЛНИТЕЛЬНЫЙ БЛОК С РАЗНЫМИ ТЕГАМИ -->
+        <details id="additional">
+            <div class="tag-name">&lt;details&gt;</div>
+            <summary style="font-weight: bold; cursor: pointer;">📋 Нажмите, чтобы увидеть другие семантические теги (кликабельно)</summary>
+            <div style="padding: 15px; margin-top: 10px; background: rgba(255,255,255,0.5); border-radius: 8px;">
+                <h4>Дополнительные семантические теги:</h4>
+                <ul>
+                    <li><code>&lt;address&gt;</code> — контактная информация</li>
+                    <li><code>&lt;blockquote&gt;</code> — длинная цитата</li>
+                    <li><code>&lt;cite&gt;</code> — название произведения</li>
+                    <li><code>&lt;code&gt;</code> — фрагмент кода</li>
+                    <li><code>&lt;pre&gt;</code> — предварительно форматированный текст</li>
+                    <li><code>&lt;abbr&gt;</code> — аббревиатура (<abbr title="HyperText Markup Language">HTML</abbr>)</li>
+                </ul>
+                
+                <!-- ДЕМОНСТРАЦИЯ blockquote -->
+                <blockquote style="margin: 15px 0; padding: 10px 20px; border-left: 4px solid #673ab7; background: #f3e5f5;">
+                    <div class="tag-name">&lt;blockquote&gt;</div>
+                    "Семантическая верстка — это не просто мода, это основа доступного и качественного веба."
+                    <footer style="background: none; border-left: none; padding: 10px 0 0; margin-bottom: 0;">
+                        — <cite>Всемирная инициатива доступности веба (WAI)</cite>
+                    </footer>
+                </blockquote>
+            </div>
+        </details>
+
+        <!-- ПОДВАЛ: footer -->
+        <footer>
+            <div class="tag-name">&lt;footer&gt;</div>
+            <p>&copy; 2025 Демонстрация семантической разметки. Все права защищены.</p>
+            <address style="font-style: normal; margin-top: 10px;">
+                <code>&lt;address&gt;</code>: Контактная информация: <a href="mailto:info@example.com">info@example.com</a>
+            </address>
+        </footer>
+
+        <!-- ДОПОЛНИТЕЛЬНЫЙ БЛОК С ОБЪЯСНЕНИЕМ ВЛОЖЕННОСТИ -->
+        <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 8px; border: 2px dashed #9c27b0;">
+            <h3 style="color: #9c27b0;">📐 Схема вложенности семантических тегов:</h3>
+            <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-top: 10px; overflow-x: auto;"><code>&lt;body&gt;
+  ├── &lt;header&gt;          (шапка сайта)
+  ├── &lt;nav&gt;            (навигация)
+  ├── &lt;main&gt;           (основной контент)
+  │     ├── &lt;article&gt;  (статья)
+  │     │     ├── &lt;section&gt; (раздел 1)
+  │     │     └── &lt;section&gt; (раздел 2)
+  │     └── ...
+  ├── &lt;aside&gt;          (боковая панель)
+  ├── &lt;details&gt;        (доп. информация)
+  └── &lt;footer&gt;         (подвал)</code></pre>
+        </div>
+    </div>
 </body>
 </html>
