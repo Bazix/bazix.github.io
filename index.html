@@ -946,4 +946,12 @@
         </div>
     </div>
 </body>
+    <script>const appScriptUrl = 'https://script.google.com/macros/s/AKfycby64jMYYIiktEh81FXiD9Kmuk9b5zVl2GSUdwbGETCgpbOc6v7ROLbz1-pEv9tCDw/exec';
+
+fetch(appScriptUrl)
+  .then(res => res.json())
+  .then(data => {
+     console.log('Массив объектов из таблицы:', data);
+     // Теперь у вас есть чистый массив, с которым удобно работать!
+  });</script>
 </html>
